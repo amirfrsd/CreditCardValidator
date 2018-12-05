@@ -2,10 +2,20 @@
 //  CreditCardValidator.swift
 //
 //  Created by Vitaliy Kuzmenko on 02/06/15.
+//  Edited by Amir Hossein Farsad
 //  Copyright (c) 2015. All rights reserved.
 //
 
 import Foundation
+
+extension String {
+    func substring(location: Int, length: Int) -> String? {
+        guard characters.count >= location + length else { return nil }
+        let start = index(startIndex, offsetBy: location)
+        let end = index(startIndex, offsetBy: location + length)
+        return substring(with: start..<end)
+    }
+}
 
 public class CreditCardValidator {
     
@@ -15,17 +25,17 @@ public class CreditCardValidator {
             types.append(CreditCardValidationType(dict: object))
         }
         return types
-        }()
+    }()
     
     public init() { }
     
     /**
-    Get card type from string
-    
-    - parameter string: card number string
-    
-    - returns: CreditCardValidationType structure
-    */
+     Get card type from string
+     
+     - parameter string: card number string
+     
+     - returns: CreditCardValidationType structure
+     */
     public func type(from string: String) -> CreditCardValidationType? {
         for type in types {
             let predicate = NSPredicate(format: "SELF MATCHES %@", type.regex)
@@ -38,48 +48,40 @@ public class CreditCardValidator {
     }
     
     /**
-    Validate card number
-    
-    - parameter string: card number string
-    
-    - returns: true or false
-    */
+     Validate card number
+     
+     - parameter string: card number string
+     
+     - returns: true or false
+     */
     public func validate(string: String) -> Bool {
-        let numbers = self.onlyNumbers(string: string)
-        if numbers.count < 9 {
+        let length: Int? = string.count
+        let subString = string.substring(location: 15, length: 1)
+        let subStringOne = string.substring(location: 1, length: 10)
+        let subStringTwo = string.substring(location: 10, length: 6)
+        var s: Int = 0
+        var k: Int = 0
+        var d: Int = 0
+        if (length! < 16 || Int(subStringOne!) == 0 || Int(subStringTwo!) == 0) {
             return false
         }
-        
-        var reversedString = ""
-        let range: Range<String.Index> = numbers.startIndex..<numbers.endIndex
-        
-        numbers.enumerateSubstrings(in: range, options: [.reverse, .byComposedCharacterSequences]) { (substring, substringRange, enclosingRange, stop) -> () in
-            reversedString += substring!
+        for i in 0..<16 {
+            let subStr = string.substring(location: i, length: 1)
+            k = (i % 2 == 0) ? 2 : 1
+            d = Int(subStr!)! * k
+            s += (d > 9) ? d - 9 : d
         }
-        
-        var oddSum = 0, evenSum = 0
-        
-        for (i, s) in reversedString.enumerated() {
-            
-            let digit = Int(String(s))!
-            
-            if i % 2 == 0 {
-                evenSum += digit
-            } else {
-                oddSum += digit / 5 + (2 * digit) % 10
-            }
-        }
-        return (oddSum + evenSum) % 10 == 0
+        return (s % 10) == 0
     }
     
     /**
-    Validate card number string for type
-    
-    - parameter string: card number string
-    - parameter type:   CreditCardValidationType structure
-    
-    - returns: true or false
-    */
+     Validate card number string for type
+     
+     - parameter string: card number string
+     - parameter type:   CreditCardValidationType structure
+     
+     - returns: true or false
+     */
     public func validate(string: String, forType type: CreditCardValidationType) -> Bool {
         return self.type(from: string) == type
     }
@@ -94,33 +96,111 @@ public class CreditCardValidator {
     
     private static let types = [
         [
-            "name": "Amex",
-            "regex": "^3[47][0-9]{5,}$"
+            "name": "بانک سامان",
+            "regex": "^621986.{10}"
         ], [
-            "name": "Visa",
-            "regex": "^4\\d{0,}$"
+            "name": "موسسه اعتباري توسعه",
+            "regex": "^628157.{10}"
         ], [
-            "name": "MasterCard",
-            "regex": "^5[1-5]\\d{0,14}$"
+            "name": "موسسه اعتباري ملل",
+            "regex": "^606256.{10}"
         ], [
-            "name": "Maestro",
-            "regex": "^(?:5[0678]\\d\\d|6304|6390|67\\d\\d)\\d{8,15}$"
+            "name": "موسسه اعتباري کوثر",
+            "regex": "^505801.{10}"
         ], [
-            "name": "Diners Club",
-            "regex": "^3(?:0[0-5]|[68][0-9])[0-9]{4,}$"
+            "name": "بانک اقتصادنوين",
+            "regex": "^627412.{10}"
         ], [
-            "name": "JCB",
-            "regex": "^(?:2131|1800|35[0-9]{3})[0-9]{3,}$"
+            "name": "بانک انصار",
+            "regex": "^627381.{10}"
         ], [
-            "name": "Discover",
-            "regex": "^6(?:011|5[0-9]{2})[0-9]{3,}$"
+            "name": "بانک ايران زمين",
+            "regex": "^505785.{10}"
         ], [
-            "name": "UnionPay",
-            "regex": "^62[0-5]\\d{13,16}$"
+            "name": "بانک آينده",
+            "regex": "^636214.{10}"
         ], [
-            "name": "Mir",
-            "regex": "^22[0-9]{1,14}$"
-        ]
-    ]
+            "name": "پست بانک",
+            "regex": "^627760.{10}"
+        ], [
+            "name": "بانک توسعه تعاون",
+            "regex": "^502908.{10}"
+        ], [
+            "name": "بانک حكمت ايرانيان",
+            "regex": "^636949.{10}"
+        ], [
+            "name": "بانک دي",
+            "regex": "^502938.{10}"
+        ], [
+            "name": "بانک رسالت",
+            "regex": "^504172.{10}"
+        ], [
+            "name": "بانک رفاه",
+            "regex": "^589463.{10}"
+        ], [
+            "name": "بانک سپه",
+            "regex": "^589210.{10}"
+        ], [
+            "name": "بانک سرمایه",
+            "regex": "^639607.{10}"
+        ], [
+            "name": "بانک سینا",
+            "regex": "^639346.{10}"
+        ], [
+            "name": "بانک صادرات",
+            "regex": "^603769.{10}"
+        ], [
+            "name": "بانک صنعت و معدن",
+            "regex": "^627961.{10}"
+        ], [
+            "name": "بانک قوامین",
+            "regex": "^639599.{10}"
+        ], [
+            "name": "بانک کار آفرین",
+            "regex": "^627488.{10}"
+        ], [
+            "name": "بانک گردشگری",
+            "regex": "^505416.{10}"
+        ], [
+            "name": "بانک مسکن",
+            "regex": "^628023.{10}"
+        ], [
+            "name": "بانک ملت",
+            "regex": "^610433.{10}"
+        ], [
+            "name": "بانک ملی",
+            "regex": "^603799.{10}"
+        ], [
+            "name": "بانک مهر ایران",
+            "regex": "^606373.{10}"
+        ], [
+            "name": "بانک مهر اقتصاد",
+            "regex": "^639370.{10}"
+        ], [
+            "name": "موسسه اعتباری نور",
+            "regex": "^507677.{10}"
+        ], [
+            "name": "بانک پارسيان",
+            "regex": "^(?:622106|639194).{10}"
+        ], [
+            "name": "بانک پاسارگاد",
+            "regex": "^(?:502229|639347).{10}"
+        ], [
+            "name": "بانک تجارت",
+            "regex": "^(?:585983|627353).{10}"
+        ], [
+            "name": "بانک توسعه صادرات",
+            "regex": "^(?:627648|207177).{10}"
+        ], [
+            "name": "بانک خاورمیانه",
+            "regex": "^(?:505809|585947).{10}"
+        ], [
+            "name": "بانک شهر",
+            "regex": "^(?:504706|502806).{10}"
+        ], [
+            "name": "بانک کشاورزی",
+            "regex": "^(?:639217|603770).{10}"
+        ],
+           ]
     
 }
