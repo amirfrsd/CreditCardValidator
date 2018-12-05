@@ -1,21 +1,17 @@
-# Credit Card Validator on Swift
-Credit Card Validator and type detector on Swift.
+# Shetab Credit Card Validator on Swift
+Shetab Credit Card Validator and type detector on Swift.
 
 Inspired from [https://github.com/MaxKramer/ObjectiveLuhn]()
-
-
-# Installation
-`pod "CreditCardValidator"`
 
 # Usage
 ## Validating
 
 ```Swift
-let number = "1234 5678 9123 4567"
+let number = "6219861030762784"
    
 let v = CreditCardValidator()
    
-if v.validateString(number) {
+if v.validate(string: number) {
   // Card number is valid
 } else {
   // Card number is invalid
@@ -26,11 +22,11 @@ if v.validateString(number) {
 ## Detect Card Type
 
 ```Swift
-let number = "1234 5678 9123 4567"
+let number = "6219 8610 3076 2784"
    
 let v = CreditCardValidator()
 if let type = v.typeFromString(number) {
-	println(type.name) // Visa, Mastercard, Amex etc.
+	println(type.name) // Saman, Pasargad, Mellat and etc.
 } else {
 	// I Can't detect type of credit card
 }
